@@ -1,41 +1,45 @@
 class BankAccount:
-    def __init__(self, initial_balance):
+    def __init__(self, initial_balance=0):
         if initial_balance < 0:
-            print("Error: Initial balance cannot be negative")
-            self.balance = 0 
-        else:
-            self.balance = initial_balance
+            raise ValueError("Initial balance cannot be negative")
+        self.balance = initial_balance
     
     def deposit(self, amount):
-        if amount <= 0:
-            return "Error: Deposit amount must be positive"
-        self.balance += amount
-        return str(amount) + " deposited successfully"
+        try:
+            if amount <= 0:
+                raise ValueError("Deposit amount must be positive")
+            self.balance += amount
+            return f"${amount} deposited successfully"
+        except ValueError as e:
+            return str(e)
     
     def withdraw(self, amount):
-        if amount <= 0:
-            return "Error: Withdrawal amount must be positive"
-        if amount > self.balance:
-            return "Error: Insufficient balance"
-        self.balance -= amount
-        return str(amount) + " withdrawn successfully"
+        try:
+            if amount <= 0:
+                raise ValueError("Withdrawal amount must be positive")
+            if amount > self.balance:
+                raise ValueError("Insufficient balance")
+            self.balance -= amount
+            return f"${amount} withdrawn successfully"
+        except ValueError as e:
+            return str(e)
     
     def check_balance(self):
         return self.balance
     
     def __str__(self):
-        return "Bank Account Balance: $" + str(self.balance)
+        return f"Bank Account Balance: ${self.balance}"
 
 
 class SavingsAccount(BankAccount):
     def __init__(self, initial_balance=0, interest_rate=0.02):
-        BankAccount.__init__(self, initial_balance)
+        super().__init__(initial_balance)
         self.interest_rate = interest_rate
     
     def apply_interest(self):
         interest = self.balance * self.interest_rate
         self.balance += interest
-        return "Interest applied: $" + str(round(interest, 2))
+        return f"Interest applied: ${interest:.2f}"
     
     def __str__(self):
-        return "Savings Account Balance: $" + str(self.balance) + ", Interest Rate: " + str(self.interest_rate*100) + "%"
+        return f"Savings Account Balance: ${self.balance}, Interest Rate: {self.interest_rate*100}%"
